@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyLifeServer", "MyLifeServer\MyLifeServer.csproj", "{156F19E6-1C18-4551-9891-77EE656564EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyLifeClient", "MyLifeClient\MyLifeClient.csproj", "{7E7683C5-2C26-4401-9A62-F12C42BC3E79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{156F19E6-1C18-4551-9891-77EE656564EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{156F19E6-1C18-4551-9891-77EE656564EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{156F19E6-1C18-4551-9891-77EE656564EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{156F19E6-1C18-4551-9891-77EE656564EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E7683C5-2C26-4401-9A62-F12C42BC3E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E7683C5-2C26-4401-9A62-F12C42BC3E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E7683C5-2C26-4401-9A62-F12C42BC3E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E7683C5-2C26-4401-9A62-F12C42BC3E79}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7BF3CC0C-0A17-470E-B2E5-F342DC2837C5}
+	EndGlobalSection
+EndGlobal
