@@ -1,0 +1,30 @@
+﻿@page
+@model LoginModel
+
+@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="col-md-10 offset-md-1">
+    <section>
+        <div class="text-center mt-4">
+            <img class="rounded-circle" src="~/img/dear-icon.jpg" height="200" />
+        </div>
+        
+        <form id="account" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Пароль: </label>
+                <input class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </div>
+        </form>
+    </section>
+</div>
+
