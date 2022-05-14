@@ -1,0 +1,69 @@
+﻿@model MyLifeClient.Models.RegisterModel
+@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="col-md-10 offset-md-1 mt-4">
+    <form asp-action="Register">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Имя пользователя:</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password" class="control-label">Пароль:</label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ConfirmPassword" class="control-label">Повторите пароль:</label>
+            <input asp-for="ConfirmPassword" class="form-control" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Подтвердить" class="btn btn-primary mb-3" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+            @*@page
+        @model RegisterModel
+
+        @{
+            Layout = "~/Views/Shared/_AuthLayout.cshtml";
+        }
+
+        <div class="col-md-10 offset-md-1">
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label>Имя пользователя: </label>
+                    <input class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Email: </label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Пароль: </label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Повторите пароль:</label>
+                    <input class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary mb-3">Подтвердить</button>
+            </form>
+        </div>*@
