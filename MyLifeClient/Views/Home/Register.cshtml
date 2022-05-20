@@ -4,30 +4,34 @@
 }
 
 <div class="col-md-10 offset-md-1 mt-4">
+    <div class="text-center mt-4 mb-3">
+        <img src="~/img/artwork-wallpaper-thumb.jpg" width="400" />
+    </div>
     <form asp-action="Register">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="Name" class="control-label">Имя пользователя:</label>
-            <input asp-for="Name" class="form-control" />
+            <label asp-for="Name" class="control-label">Имя пользователя: </label>
             <span asp-validation-for="Name" class="text-danger"></span>
+            <input asp-for="Name" class="form-control" />
+
         </div>
         <div class="form-group">
-            <label asp-for="Email" class="control-label"></label>
-            <input asp-for="Email" class="form-control" />
+            <label asp-for="Email" class="control-label">Email: </label>
             <span asp-validation-for="Email" class="text-danger"></span>
+            <input asp-for="Email" class="form-control" />
         </div>
         <div class="form-group">
-            <label asp-for="Password" class="control-label">Пароль:</label>
-            <input asp-for="Password" class="form-control" />
+            <label asp-for="Password" class="control-label">Пароль: </label>
             <span asp-validation-for="Password" class="text-danger"></span>
+            <input asp-for="Password" class="form-control" />
         </div>
         <div class="form-group">
-            <label asp-for="ConfirmPassword" class="control-label">Повторите пароль:</label>
-            <input asp-for="ConfirmPassword" class="form-control" />
+            <label asp-for="ConfirmPassword" class="control-label">Повторите пароль: </label>
             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            <input asp-for="ConfirmPassword" class="form-control" />
         </div>
         <div class="form-group">
-            <input type="submit" value="Подтвердить" class="btn btn-primary mb-3" />
+            <input type="submit" value="Подтвердить" class="btn btn-info mb-3" />
         </div>
     </form>
 </div>

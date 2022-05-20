@@ -1,0 +1,91 @@
+﻿    <style>
+        .vl {
+            border-right: 0.5px solid #cf6767;
+            height: 40px;
+            margin-right: 5px;
+        }
+
+        li a {
+            margin-right: 5px;
+        }
+
+        .dropbtn {
+            margin-right: 5px;
+            border: 0;
+            height: 40px;
+            background-color: white;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+            width: 100%;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #f1f1f1;
+        }
+    </style>
+
+    <ul class="navbar-nav">
+        @if (MainUser.IsAuthorized())
+        {
+            <li class="d-sm-inline-flex justify-content-between">
+                @if (MainUser.IsInRole(MainUser.UserRole.Administrator))
+                {
+                    <div class="dropdown">
+                        <button class="link dropbtn" style="outline: none;">Таблицы</button>
+                        <div class="dropdown-content">
+                            <a class="link" asp-area="" asp-controller="Manage" asp-action="Customers">Производители</a>
+                            <a class="link" asp-area="" asp-controller="Manage" asp-action="Delivers">Доставки</a>
+                        </div>
+                    </div>
+                }
+                @*<a class="link" asp-area="" asp-controller="Home" asp-action="Orders">Заказы</a>
+                <a class="link" asp-area="" asp-controller="Home" asp-action="Basket">Корзина</a>
+                <a class="link" asp-area="" asp-controller="Home" asp-action="Catalog">Каталог</a>*@
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-dark">Привет, @MainUser.GetName()!</a>
+            </li>
+
+            <li class="nav-item">
+                <button id="logout" type="submit" class="btn btn-link link" asp-area="" asp-controller="Home" asp-action="Quit">Выйти</button>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="btn btn-link link" asp-area="" asp-controller="Home" asp-action="Login">Войти</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-link link" asp-area="" asp-controller="Home" asp-action="Register">Загерестрироваться</a>
+            </li>
+        }
+    </ul>
+
+

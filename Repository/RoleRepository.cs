@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace Repository
         public RoleRepository(RepositoryContext repositoryContext) : base(repositoryContext)
         {
         }
+
+        public async Task<Role> GetRoleByIdAsync(Guid roleId, bool trackChanges) =>
+            await FindByCondition(e => e.Id.Equals(roleId), trackChanges)
+            .SingleOrDefaultAsync();
     }
 }
