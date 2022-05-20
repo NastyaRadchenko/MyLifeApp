@@ -59,6 +59,7 @@ body {
     /* Margin bottom by footer height */
     font-family: 'Roboto', sans-serif;
     margin-bottom: 60px;
+    background-color: InfoBackground;
     /*background-image: url(../img/background-white-leaves.png);
     background-size: cover;
     background-repeat: no-repeat;*/
