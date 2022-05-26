@@ -10,6 +10,7 @@ namespace Contracts
     {
         IUserRepository User { get; }
         IRoleRepository Role { get; }
+        IDiaryRepository Diary { get; }
         Task SaveAsync();
     }
 }

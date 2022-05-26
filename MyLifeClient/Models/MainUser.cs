@@ -51,5 +51,6 @@ namespace MyLifeClient.Models
         }
 
         public static string GetName() { return Name; }
+        public static Guid GetId() { return Id; }
     }
 }

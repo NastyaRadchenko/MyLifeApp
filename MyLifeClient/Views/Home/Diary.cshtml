@@ -1,0 +1,98 @@
+﻿@model IEnumerable<MyLifeClient.Models.DiaryEntry>
+
+<p>
+    <a asp-action="CreateDiaryEntry" class="btn-link link ml-3">Новая запись</a>
+</p>
+<div class="container pre-scrollable scroll-block">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Дата
+                </th>
+                <th>
+                    Текст
+                </th>
+                <th>
+                    Изображение
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Date.Day.@item.Date.Month.@item.Date.Year
+                    </td>
+                    <td>
+                        @if (item.Text.Length > 180)
+                        {
+                            @item.Text.Substring(0, 180)
+                            <a>...</a>
+                        }
+                        else @item.Text
+                    </td>
+                    <td style="text-align:center;">
+                        @if (item.Picture != null)
+                        {
+                            <img src="@ByteConvert.GetStringFromBytes(item.Picture)" width="50" />
+                        }
+                    </td>
+                    <td>
+                        @using (Html.BeginForm("DiaryEntry", "Home", FormMethod.Get))
+                        {
+                            <input type="hidden" name="inputId" value="@item.Id" />
+                            <input class="btn btn-link link" type="submit" value="Подробнее">
+                        }
+                        @using (Html.BeginForm("DeleteDiaryEntry", "Home", FormMethod.Post))
+                        {
+                            <input type="hidden" name="inputId" value="@item.Id" />
+                            <input class="btn btn-link link" type="submit" value="Удалить">
+                        }
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@*@{ модальные эксперименты
+    string entryId = null;
+
+    object SaveId(string id)
+    {
+        entryId = id;
+        return null;
+    }
+}
+<a class="btn-link link" asp-action="" data-toggle="modal" data-target="#modal" onclick="@SaveId(item.Id.ToString())">Удалить</a>
+<div class="modal fade" id="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Предупреждение</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="~/img/delete-icon-in-blue-style-for-any-projects-vector-38472794.jpg" width="100" />
+                <p class="mt-4">Вы действительно хотите удалить запись?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteDiaryEntry", "Home", FormMethod.Post))
+                {
+                    <input id="hide1" type="hidden" name="inputId" value="@entryId" />
+                    <input class="btn btn-info" type="submit" value="Да, хочу">
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>*@

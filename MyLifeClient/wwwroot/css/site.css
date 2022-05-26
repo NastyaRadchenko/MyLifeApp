@@ -1,7 +1,32 @@
-﻿a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿.container .pre-scrollable {
+    min-height: 520px;
+}
+
+.scroll-block {
+    overflow-y: scroll;
+}
+
+.scroll-block::-webkit-scrollbar-track {
+    border-radius: 4px;
+}
+
+.scroll-block::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scroll-block::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #f0f2f5;
+}
+
+.scroll-block:hover::-webkit-scrollbar-thumb {
+    background: #6a7d9b;
+}
+/*-------------------------------------------------*/
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
