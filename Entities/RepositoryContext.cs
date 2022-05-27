@@ -18,6 +18,7 @@ namespace Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<DiaryEntry> DiaryEntries { get; set; }
+        public DbSet<State> States { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

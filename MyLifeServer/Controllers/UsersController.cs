@@ -110,5 +110,54 @@ namespace MyLifeServer.Controllers
             await _repository.SaveAsync();
             return Ok(inputEntry);
         }
+
+        //states
+
+        [HttpGet("{userId}/weigthControl")]
+        public async Task<IActionResult> GetStates(Guid userId)
+        {
+            var states = await _repository.State.GetStatesByUserIdAsync(userId, trackChanges: false);
+            return Ok(states);
+        }
+
+
+        [HttpGet("{userId}/weigthControl/{stateId}")]
+        public async Task<IActionResult> GetState(Guid stateId)
+        {
+            var state = await _repository.State.GetStateByIdAsync(stateId, trackChanges: false);
+            return Ok(state);
+        }
+
+        [HttpPost("{userId}/weigthControl")]
+        public async Task<IActionResult> CreateState(Guid userId, [FromBody] State state)
+        {
+            state.UserId = userId;
+            _repository.State.CreateState(state);
+            await _repository.SaveAsync();
+            return Ok(state);
+        }
+
+        [HttpDelete("{userId}/weigthControl/{stateId}")]
+        public async Task<IActionResult> DeleteState(Guid stateId)
+        {
+            var state = await _repository.State.GetStateByIdAsync(stateId, trackChanges: false);
+            _repository.State.DeleteState(state);
+            await _repository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpPut("{userId}/weigthControl/{stateId}")]
+        public async Task<IActionResult> UpdateStateById(Guid stateId, [FromBody] State inputState)
+        {
+            var stateFromDb = await _repository.State.GetStateByIdAsync(stateId, trackChanges: false);
+            if (inputState == null)
+            {
+                return BadRequest("Input state is null");
+            }
+            _repository.State.DeleteState(stateFromDb);
+            _repository.State.CreateState(inputState);
+            await _repository.SaveAsync();
+            return Ok(inputState);
+        }
     }
 }
