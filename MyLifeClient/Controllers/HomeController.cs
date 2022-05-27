@@ -22,6 +22,8 @@ namespace MyLifeClient.Controllers
             _logger = logger;
         }
 
+        //VALIDATION
+
         [AcceptVerbs("GET", "POST")]
         public async Task<JsonResult> ValidateLoginPassword(string email, string password)
         {
@@ -34,7 +36,6 @@ namespace MyLifeClient.Controllers
             }
             return Json("Неверный пароль");
         }
-
         public async Task<JsonResult> ValidateLoginEmail(string email)
         {
             var user = await RequestsToServer<User>.SendGet($"https://localhost:5001/api/users/emails/{email}");
@@ -44,7 +45,6 @@ namespace MyLifeClient.Controllers
             }
             return Json(true);
         }
-
         public async Task<JsonResult> ValidateRegisterEmail(string email)
         {
             var user = await RequestsToServer<User>.SendGet($"https://localhost:5001/api/users/emails/{email}");
@@ -55,11 +55,7 @@ namespace MyLifeClient.Controllers
             return Json(true);
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+        //AUTHORIZATION - REGISTRATION
         public IActionResult Login()
         {
             return View();
@@ -69,41 +65,6 @@ namespace MyLifeClient.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Diary()
-        {
-            var result = await RequestsToServer<IEnumerable<DiaryEntry>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary");
-            return View(result);
-        }
-
-        public async Task<IActionResult> DiaryEntry(Guid inputId)
-        {
-            var entry = await RequestsToServer<DiaryEntry>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
-            return View(entry);
-        }
-
-        public IActionResult CreateDiaryEntry()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> UpdateDiaryEntry(Guid inputId)
-        {
-            var entry = await RequestsToServer<DiaryEntry>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
-            return View(entry);
-        }
-
-        public IActionResult Quit()
-        {
-            MainUser.Quit();
-            return RedirectToAction("Login", "Home");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-        
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {
@@ -112,7 +73,7 @@ namespace MyLifeClient.Controllers
             {
                 Id = Guid.NewGuid(),
                 Name = model.Name,
-                Email = model.Email                
+                Email = model.Email
             };
             if (model.Password.Equals(model.ConfirmPassword))
             {
@@ -135,8 +96,60 @@ namespace MyLifeClient.Controllers
             {
                 MainUser.NewMain(user);
                 return RedirectToAction("Index", "Home");
-            } 
+            }
             else return RedirectToAction("Login", "Home");
+        }
+
+        public IActionResult Quit()
+        {
+            MainUser.Quit();
+            return RedirectToAction("Login", "Home");
+        }
+
+        //MAIN VIEWS
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        //LIST PAGES
+
+        public async Task<IActionResult> Diary()
+        {
+            var result = await RequestsToServer<IEnumerable<DiaryEntry>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary");
+            return View(result);
+        }
+
+        public async Task<IActionResult> WeigthControl()
+        {
+            var result = await RequestsToServer<IEnumerable<State>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/weigthControl");
+            return View(result);
+        }
+
+        //ONE PAGE
+        public async Task<IActionResult> DiaryEntry(Guid inputId)
+        {
+            var entry = await RequestsToServer<DiaryEntry>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
+            return View(entry);
+        }
+
+        //CREATE PAGES
+
+        public IActionResult CreateDiaryEntry()
+        {
+            return View();
+        }
+
+        public IActionResult CreateState()
+        {
+            return View(new InputState(DateTime.Today, 60, 0, 3));
         }
 
         [HttpPost]
@@ -151,6 +164,27 @@ namespace MyLifeClient.Controllers
                 return RedirectToAction("Diary", "Home");
             }
             else return RedirectToAction("CreateDiaryEntry", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateState(InputState inputState)
+        {
+            var weigth = Convert.ToDouble(inputState.MainWeigth + "," + inputState.PartialWeight);
+            var state = new State(Guid.NewGuid(), MainUser.GetId(), inputState.Date, weigth, inputState.Mood);
+            var responce = await RequestsToServer<State>.SendPost(state, $"https://localhost:5001/api/users/{MainUser.GetId()}/weigthControl");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else return RedirectToAction("CreateState", "Home");
+        }
+
+        //UPDATE PAGE
+
+        public async Task<IActionResult> UpdateDiaryEntry(Guid inputId)
+        {
+            var entry = await RequestsToServer<DiaryEntry>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
+            return View(entry);
         }
 
         [HttpPost]
@@ -169,6 +203,8 @@ namespace MyLifeClient.Controllers
             else return RedirectToAction("UpdateDiaryEntry", "Home");
         }
 
+        //DELETE PAGE
+
         [HttpPost]
         public async Task<IActionResult> DeleteDiaryEntry(Guid inputId)
         {
@@ -181,4 +217,3 @@ namespace MyLifeClient.Controllers
         }
     }
 }
- 

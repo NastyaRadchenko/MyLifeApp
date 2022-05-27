@@ -1,4 +1,11 @@
-﻿.container .pre-scrollable {
+﻿.test-cont {
+    min-height: 490px;
+    background-image: url(../img/normann.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container .pre-scrollable {
     min-height: 520px;
 }
 

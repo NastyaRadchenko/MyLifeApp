@@ -1,0 +1,77 @@
+﻿@model MyLifeClient.Models.InputState
+
+<style>
+    .container {
+        width: 60%;
+    }
+</style>
+
+<div class="container">
+    <form asp-action="CreateState">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="test-cont pt-4">
+            <div class="container pt-1" style="width: 32%;">
+                <table>
+                    <tr>
+                        <td>
+                            <input asp-for="MainWeigth" class="form-control" style="width: 70px;" />
+                        </td>
+                        <td>
+                            ,
+                        </td>
+                        <td>
+                            <input asp-for="PartialWeight" class="form-control" style="width: 50px;" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="container pt-5" style="min-height:350px; text-align: center; width:100%;">
+                <p>Настроение:</p>
+                <p class="mb-1">
+                    <input type="radio" asp-for="Mood" value="1" class="form-check-input" />
+                    <img src="~/img/mood1.png" width="20" />
+                </p>
+                <p class="mb-1">
+                    <input type="radio" asp-for="Mood" value="2" class="form-check-input" />
+                    <label asp-for="Mood" class="form-check-label"><img src="~/img/mood2.png" width="20" /></label>
+                </p>
+                <p class="mb-1">
+                    <input type="radio" asp-for="Mood" value="3" class="form-check-input" />
+                    <label asp-for="Mood" class="form-check-label"><img src="~/img/mood3.png" width="20" /></label>
+                </p>
+                <p class="mb-1">
+                    <input type="radio" asp-for="Mood" value="4" class="form-check-input" />
+                    <label asp-for="Mood" class="form-check-label"><img src="~/img/mood4.png" width="20" /></label>
+                </p>
+                <p class="mb-4">
+                    <input type="radio" asp-for="Mood" value="5" class="form-check-input" />
+                    <label asp-for="Mood" class="form-check-label"><img src="~/img/mood5.png" width="20" /></label>
+                </p>
+                <p class="mb-1"><span asp-validation-for="MainWeigth" class="text-danger"></span></p>
+                <p class="mb-1"><span asp-validation-for="PartialWeight" class="text-danger"></span></p>
+                <p class="mb-1"><span asp-validation-for="Mood" class="text-danger"></span></p>
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group form-inline">
+                <table style="margin-left: 10px;">
+                    <tr>
+                        <td style="width: 330px;">
+                            <input type="submit" value="Сохранить" class="btn btn-outline-info" style="width: 140px;" />
+                        </td>
+                        <td>
+                            <input asp-for="Date" class="form-control" style="width: 140px;" />
+                        </td>
+                    </tr>
+                </table>
+            </div>                
+        </div>
+        
+    </form>
+    <div>
+        <a asp-action="Index" class="text-info">⇦ Назад</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
