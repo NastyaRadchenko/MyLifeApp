@@ -20,6 +20,8 @@ namespace MyLifeServer.Controllers
             _repository = repository;
         }
 
+        //users
+        
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -35,15 +37,6 @@ namespace MyLifeServer.Controllers
             return Ok(user);
         }
 
-        [HttpGet("{userId}/role")]
-        public async Task<IActionResult> GetUserRole(Guid userId)
-        {
-            var user = await _repository.User.GetUserByIdAsync(userId, trackChanges: false);
-            var role = await _repository.Role.GetRoleByIdAsync(user.RoleId, trackChanges: false);
-
-            return Ok(role.Name);
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
@@ -56,6 +49,66 @@ namespace MyLifeServer.Controllers
             _repository.User.CreateUser(user);
             await _repository.SaveAsync();
             return Ok(user);
+        }
+
+        //roles
+
+        [HttpGet("{userId}/role")]
+        public async Task<IActionResult> GetUserRole(Guid userId)
+        {
+            var user = await _repository.User.GetUserByIdAsync(userId, trackChanges: false);
+            var role = await _repository.Role.GetRoleByIdAsync(user.RoleId, trackChanges: false);
+
+            return Ok(role.Name);
+        }
+
+        //diary
+
+        [HttpGet("{userId}/diary")]
+        public async Task<IActionResult> GetDiaryEntries(Guid userId)
+        {
+            var entries = await _repository.Diary.GetEntriesByUserIdAsync(userId, trackChanges: false);
+            return Ok(entries);
+        }
+
+
+        [HttpGet("{userId}/diary/{entryId}")]
+        public async Task<IActionResult> GetDiaryEntry(Guid entryId)
+        {
+            var entry = await _repository.Diary.GetEntryByIdAsync(entryId, trackChanges: false);
+            return Ok(entry);
+        }
+
+        [HttpPost("{userId}/diary")]
+        public async Task<IActionResult> CreateDiaryEntry(Guid userId, [FromBody]DiaryEntry entry)
+        {
+            entry.UserId = userId;
+            _repository.Diary.CreateEntry(entry);
+            await _repository.SaveAsync();
+            return Ok(entry);
+        }
+
+        [HttpDelete("{userId}/diary/{entryId}")]
+        public async Task<IActionResult> DeleteDiaryEntry(Guid entryId)
+        {
+            var entry = await _repository.Diary.GetEntryByIdAsync(entryId, trackChanges: false);
+            _repository.Diary.DeleteEntry(entry);
+            await _repository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpPut("{userId}/diary/{entryId}")]
+        public async Task<IActionResult> UpdateEntryById(Guid entryId, [FromBody] DiaryEntry inputEntry)
+        {
+            var entryFromDb = await _repository.Diary.GetEntryByIdAsync(entryId, trackChanges: false);
+            if(inputEntry == null)
+            {
+                return BadRequest("Input entry is null");
+            }
+            _repository.Diary.DeleteEntry(entryFromDb);
+            _repository.Diary.CreateEntry(inputEntry);
+            await _repository.SaveAsync();
+            return Ok(inputEntry);
         }
     }
 }

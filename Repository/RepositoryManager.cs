@@ -14,7 +14,8 @@ namespace Repository
 
         private IUserRepository _userRepository;
         private IRoleRepository _roleRepository;
-        
+        private IDiaryRepository _diaryRepository;
+
         public RepositoryManager(RepositoryContext repositoryContext)
         {
             _repositoryContext = repositoryContext;
@@ -36,6 +37,16 @@ namespace Repository
                 if (_roleRepository == null)
                     _roleRepository = new RoleRepository(_repositoryContext);
                 return _roleRepository;
+            }
+        }
+
+        public IDiaryRepository Diary
+        {
+            get
+            {
+                if (_diaryRepository == null)
+                    _diaryRepository = new DiaryRepository(_repositoryContext);
+                return _diaryRepository;
             }
         }
 

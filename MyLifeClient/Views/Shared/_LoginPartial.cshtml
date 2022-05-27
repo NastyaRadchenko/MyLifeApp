@@ -70,11 +70,15 @@
             </li>
 
             <li class="nav-item">
+                <a class="btn btn-link link" asp-area="" asp-controller="Home" asp-action="Diary">Дневник</a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link text-dark">Привет, @MainUser.GetName()!</a>
             </li>
 
             <li class="nav-item">
-                <button id="logout" type="submit" class="btn btn-link link" asp-area="" asp-controller="Home" asp-action="Quit">Выйти</button>
+                <a class="btn btn-link link" asp-area="" asp-controller="Home" asp-action="Quit">Выйти</a>
             </li>
         }
         else

@@ -9,6 +9,7 @@ namespace MyLifeClient.Models
 {
     public class LoginModel
     {
+        [Remote(action: "ValidateLoginEmail", controller: "Home")]
         [Required(ErrorMessage = "Введите email")]
         [EmailAddress(ErrorMessage = "Пожалуйста, введите корректный адрес")]
         public string Email { get; set; }

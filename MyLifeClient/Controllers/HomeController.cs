@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MyLifeClient.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -23,9 +26,7 @@ namespace MyLifeClient.Controllers
         public async Task<JsonResult> ValidateLoginPassword(string email, string password)
         {
             var hasher = new PasswordHasher<User>();
-            var httpClient = new HttpClient();
-            var responce = await httpClient.GetAsync($"https://localhost:5001/api/users/emails/{email}");
-            var user = JsonConvert.DeserializeObject<User>(responce.Content.ReadAsStringAsync().Result);
+            var user = await RequestsToServer<User>.SendGet($"https://localhost:5001/api/users/emails/{email}");
             var verificationResult = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
             if (verificationResult.Equals(PasswordVerificationResult.Success))
             {
@@ -34,11 +35,20 @@ namespace MyLifeClient.Controllers
             return Json("Неверный пароль");
         }
 
+        public async Task<JsonResult> ValidateLoginEmail(string email)
+        {
+            var user = await RequestsToServer<User>.SendGet($"https://localhost:5001/api/users/emails/{email}");
+            if (user == default(User))
+            {
+                return Json("Пользователь с таким email не найден");
+            }
+            return Json(true);
+        }
+
         public async Task<JsonResult> ValidateRegisterEmail(string email)
         {
-            var httpClient = new HttpClient();
-            var responce = await httpClient.GetAsync($"https://localhost:5001/api/users/emails/{email}");
-            if (responce.IsSuccessStatusCode)
+            var user = await RequestsToServer<User>.SendGet($"https://localhost:5001/api/users/emails/{email}");
+            if (user != default(User))
             {
                 return Json("Пользователь с таким email уже существует");
             }
@@ -54,20 +64,32 @@ namespace MyLifeClient.Controllers
         {
             return View();
         }
-
         public IActionResult Register()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Diary()
+        {
+            var result = await RequestsToServer<IEnumerable<DiaryEntry>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary");
+            return View(result);
+        }
+
+        public async Task<IActionResult> DiaryEntry(Guid inputId)
+        {
+            var entry = await RequestsToServer<DiaryEntry>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
+            return View(entry);
+        }
+
+        public IActionResult CreateDiaryEntry()
         {
             return View();
         }
 
-        public IActionResult Auth()
+        public async Task<IActionResult> UpdateDiaryEntry(Guid inputId)
         {
-            return View();
+            var entry = await RequestsToServer<DiaryEntry>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
+            return View(entry);
         }
 
         public IActionResult Quit()
@@ -86,7 +108,6 @@ namespace MyLifeClient.Controllers
         public async Task<IActionResult> Register(RegisterModel model)
         {
             var hasher = new PasswordHasher<User>();
-            var httpClient = new HttpClient();
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -97,10 +118,7 @@ namespace MyLifeClient.Controllers
             {
                 user.PasswordHash = hasher.HashPassword(user, model.Password);
             }
-            var userJson = JsonConvert.SerializeObject(user);
-            HttpContent httpContent = new StringContent(userJson);
-            httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-            var responce = await httpClient.PostAsync(new Uri("https://localhost:5001/api/users"), httpContent);
+            var responce = await RequestsToServer<User>.SendPost(user, "https://localhost:5001/api/users");
             if (responce.IsSuccessStatusCode)
             {
                 MainUser.NewMain(user);
@@ -112,10 +130,8 @@ namespace MyLifeClient.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            var httpClient = new HttpClient();
-            var responce = await httpClient.GetAsync($"https://localhost:5001/api/users/emails/{model.Email}");
-            var user = JsonConvert.DeserializeObject<User>(responce.Content.ReadAsStringAsync().Result);
-           if (user != null)
+            var user = await RequestsToServer<User>.SendGet($"https://localhost:5001/api/users/emails/{model.Email}");
+            if (user != null)
             {
                 MainUser.NewMain(user);
                 return RedirectToAction("Index", "Home");
@@ -123,5 +139,46 @@ namespace MyLifeClient.Controllers
             else return RedirectToAction("Login", "Home");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateDiaryEntry(IFormFile imgFile, DiaryEntry inputEntry)
+        {
+            if (imgFile != null)
+                inputEntry.Picture = ByteConvert.GetBytesFromFile(imgFile);
+            var responce = await RequestsToServer<DiaryEntry>.SendPost(inputEntry, $"https://localhost:5001/api/users/{MainUser.GetId()}/diary");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Diary", "Home");
+            }
+            else return RedirectToAction("CreateDiaryEntry", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateDiaryEntry(IFormFile imgFile, DiaryEntry inputEntry, bool shouldDelete)
+        {
+            if (shouldDelete)
+                inputEntry.Picture = null;
+            if (imgFile != null)
+                inputEntry.Picture = ByteConvert.GetBytesFromFile(imgFile);
+            var responce = await RequestsToServer<DiaryEntry>.SendPut(inputEntry, $"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputEntry.Id}");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Diary", "Home");
+            }
+            else return RedirectToAction("UpdateDiaryEntry", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDiaryEntry(Guid inputId)
+        {
+            var responce = await RequestsToServer<DiaryEntry>.SendDelete($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Diary", "Home");
+            }
+            else return RedirectToAction("Index", "Home");
+        }
     }
 }
+ 
