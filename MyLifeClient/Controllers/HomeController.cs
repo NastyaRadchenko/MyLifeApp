@@ -127,6 +127,12 @@ namespace MyLifeClient.Controllers
             return View(result);
         }
 
+        public async Task<IActionResult> Library()
+        {
+            var result = await RequestsToServer<IEnumerable<Book>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/library");
+            return View(result);
+        }
+
         public async Task<IActionResult> WeigthControl()
         {
             var result = await RequestsToServer<IEnumerable<State>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/weigthControl");
@@ -140,6 +146,12 @@ namespace MyLifeClient.Controllers
             return View(entry);
         }
 
+        public async Task<IActionResult> Book(Guid inputId)
+        {
+            var book = await RequestsToServer<Book>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/library/{inputId}");
+            return View(book);
+        }
+
         //CREATE PAGES
 
         public IActionResult CreateDiaryEntry()
@@ -149,7 +161,14 @@ namespace MyLifeClient.Controllers
 
         public IActionResult CreateState()
         {
-            return View(new InputState(DateTime.Today, 60, 0, 3));
+            return View(new InputState(Guid.NewGuid(), DateTime.Today, 60, 0, 3));
+        }
+
+        public async Task<IActionResult> CreateBook()
+        {
+            var result = await RequestsToServer<IEnumerable<Book>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/library/categories");
+            ViewBag.Category = result;
+            return View();
         }
 
         [HttpPost]
@@ -170,13 +189,27 @@ namespace MyLifeClient.Controllers
         public async Task<IActionResult> CreateState(InputState inputState)
         {
             var weigth = Convert.ToDouble(inputState.MainWeigth + "," + inputState.PartialWeight);
-            var state = new State(Guid.NewGuid(), MainUser.GetId(), inputState.Date, weigth, inputState.Mood);
+            var state = new State(inputState.Id, MainUser.GetId(), inputState.Date, weigth, inputState.Mood);
             var responce = await RequestsToServer<State>.SendPost(state, $"https://localhost:5001/api/users/{MainUser.GetId()}/weigthControl");
             if (responce.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("WeigthControl", "Home");
             }
             else return RedirectToAction("CreateState", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateBook(IFormFile imgFile, Book inputBook)
+        {
+            if (imgFile != null)
+                inputBook.Picture = ByteConvert.GetBytesFromFile(imgFile);
+            var responce = await RequestsToServer<Book>.SendPost(inputBook, $"https://localhost:5001/api/users/{MainUser.GetId()}/library");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Library", "Home");
+            }
+            else return RedirectToAction("CreateBook", "Home");
         }
 
         //UPDATE PAGE
@@ -185,6 +218,23 @@ namespace MyLifeClient.Controllers
         {
             var entry = await RequestsToServer<DiaryEntry>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/diary/{inputId}");
             return View(entry);
+        }
+
+        public async Task<IActionResult> UpdateState(Guid inputId)
+        {
+            var state = await RequestsToServer<State>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/weigthControl/{inputId}");
+            var mainWeigth = Convert.ToInt32(Math.Truncate(state.Weigth));
+            var partialWeigth = Convert.ToInt32((state.Weigth - mainWeigth)*10);
+            var modelState = new InputState(state.Id, state.Date, mainWeigth, partialWeigth, state.Mood);
+            return View(modelState);
+        }
+
+        public async Task<IActionResult> UpdateBook(Guid inputId)
+        {
+            var book = await RequestsToServer<Book>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/library/{inputId}");
+            var categories = await RequestsToServer<IEnumerable<Book>>.SendGet($"https://localhost:5001/api/users/{MainUser.GetId()}/library/categories");
+            ViewBag.Category = categories;
+            return View(book);
         }
 
         [HttpPost]
@@ -203,6 +253,35 @@ namespace MyLifeClient.Controllers
             else return RedirectToAction("UpdateDiaryEntry", "Home");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateState(InputState inputState)
+        {
+            var weigth = Convert.ToDouble(inputState.MainWeigth + "," + inputState.PartialWeight);
+            var state = new State(inputState.Id, MainUser.GetId(), inputState.Date, weigth, inputState.Mood);
+            var responce = await RequestsToServer<State>.SendPut(state, $"https://localhost:5001/api/users/{MainUser.GetId()}/weigthControl/{state.Id}");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("WeigthControl", "Home");
+            }
+            else return RedirectToAction("UpdateState", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateBook(IFormFile imgFile, Book inputBook, bool shouldDelete)
+        {
+            if (shouldDelete)
+                inputBook.Picture = null;
+            if (imgFile != null)
+                inputBook.Picture = ByteConvert.GetBytesFromFile(imgFile);
+            var responce = await RequestsToServer<Book>.SendPut(inputBook, $"https://localhost:5001/api/users/{MainUser.GetId()}/library/{inputBook.Id}");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Library", "Home");
+            }
+            else return RedirectToAction("UpdateBook", "Home");
+        }
+
         //DELETE PAGE
 
         [HttpPost]
@@ -212,6 +291,28 @@ namespace MyLifeClient.Controllers
             if (responce.IsSuccessStatusCode)
             {
                 return RedirectToAction("Diary", "Home");
+            }
+            else return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteState(Guid inputId)
+        {
+            var responce = await RequestsToServer<State>.SendDelete($"https://localhost:5001/api/users/{MainUser.GetId()}/weigthControl/{inputId}");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("weigthControl", "Home");
+            }
+            else return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBook(Guid inputId)
+        {
+            var responce = await RequestsToServer<Book>.SendDelete($"https://localhost:5001/api/users/{MainUser.GetId()}/library/{inputId}");
+            if (responce.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Library", "Home");
             }
             else return RedirectToAction("Index", "Home");
         }

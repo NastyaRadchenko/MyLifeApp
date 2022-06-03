@@ -1,0 +1,62 @@
+﻿@model MyLifeClient.Models.Book
+
+<style>
+    .container {
+        width: 70%;
+    }
+
+    .list {
+        background-color: white;
+        min-height: 390px;
+    }
+</style>
+
+
+<div class="container">
+    <div class="pl-3 pr-3 pt-2 list">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" value="@Guid.NewGuid()" />
+            <input type="hidden" asp-for="UserId" value="@MainUser.GetId()" />
+            <table>
+                <tr>
+                    <td class="pr-3 pt-3" style="vertical-align: top;">
+                        @if (Model.Picture != null)
+                        {
+                            <img src="@ByteConvert.GetStringFromBytes(Model.Picture)" width="200" />
+                        }
+                        else
+                        {
+                            <img src="~/img/blank-book-cover.jpg" width="200" />
+                        }
+                        @Model.Author - @Model.Name
+                    </td>
+                    <td width="425">
+                        <h5 class="mb-1">Описание:</h5>
+                        <hr />
+                        <div style="width: 100%; min-height: 360px;" class="pre-scrollable scroll-block">
+                            @Model.About
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: bottom;" class="pb-3">
+                        @using (Html.BeginForm("UpdateBook", "Home", FormMethod.Get))
+                        {
+                            <input type="hidden" name="inputId" value="@Model.Id" />
+                            <input class="btn btn-outline-info" type="submit" value="Изменить">
+                        }
+                    </td>
+                    <td>
+                        
+                    </td>
+                </tr>
+            </table>
+    </div>
+    <div class="mt-3">
+        <a asp-action="Library" class="mt-2 text-info">⇦ Назад</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,64 @@
+﻿@model IEnumerable<MyLifeClient.Models.Book>
+
+<p>
+    <a asp-action="CreateBook" class="text-info">Добавить</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Название
+            </th>
+            <th>
+                Автор
+            </th>
+            <th>
+                Описание
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @if (item.Picture != null)
+                {
+                    <img src="@ByteConvert.GetStringFromBytes(item.Picture)" width="50" />
+                }
+                else
+                {
+                    <img src="~/img/blank-book-cover.jpg" width="50"/>
+                }
+            </td>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @item.Author
+            </td>
+            <td>
+                @if (item.About.Length > 150)
+                {
+                    @item.About.Substring(0, 150)
+                    <a>...</a>
+                }
+                else @item.About
+            </td>
+            <td>
+                @using (Html.BeginForm("Book", "Home", FormMethod.Get))
+                {
+                    <input type="hidden" name="inputId" value="@item.Id" />
+                    <input class="btn btn-link link" type="submit" value="Подробнее">
+                }
+                @using (Html.BeginForm("DeleteBook", "Home", FormMethod.Post))
+                {
+                    <input type="hidden" name="inputId" value="@item.Id" />
+                    <input class="btn btn-link link" type="submit" value="Удалить">
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

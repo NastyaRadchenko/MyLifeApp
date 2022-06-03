@@ -131,7 +131,6 @@ namespace MyLifeServer.Controllers
         [HttpPost("{userId}/weigthControl")]
         public async Task<IActionResult> CreateState(Guid userId, [FromBody] State state)
         {
-            state.UserId = userId;
             _repository.State.CreateState(state);
             await _repository.SaveAsync();
             return Ok(state);
@@ -158,6 +157,61 @@ namespace MyLifeServer.Controllers
             _repository.State.CreateState(inputState);
             await _repository.SaveAsync();
             return Ok(inputState);
+        }
+
+        //Books
+
+        [HttpGet("{userId}/library")]
+        public async Task<IActionResult> GetBooks(Guid userId)
+        {
+            var books = await _repository.Book.GetBooksByUserIdAsync(userId, trackChanges: false);
+            return Ok(books);
+        }
+
+        [HttpGet("{userId}/library/categories")]
+        public async Task<IActionResult> GetCategories()
+        {
+            var categories = await _repository.BookCategory.GetAllCategoriesAsync(trackChanges: false);
+            return Ok(categories);
+        }
+
+
+        [HttpGet("{userId}/library/{bookId}")]
+        public async Task<IActionResult> GetBook(Guid bookId)
+        {
+            var book = await _repository.Book.GetBookByIdAsync(bookId, trackChanges: false);
+            return Ok(book);
+        }
+
+        [HttpPost("{userId}/library")]
+        public async Task<IActionResult> CreateBook([FromBody] Book book)
+        {
+            _repository.Book.CreateBook(book);
+            await _repository.SaveAsync();
+            return Ok(book);
+        }
+
+        [HttpDelete("{userId}/library/{bookId}")]
+        public async Task<IActionResult> DeleteBook(Guid bookId)
+        {
+            var book = await _repository.Book.GetBookByIdAsync(bookId, trackChanges: false);
+            _repository.Book.DeleteBook(book);
+            await _repository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpPut("{userId}/library/{bookId}")]
+        public async Task<IActionResult> UpdateBookById(Guid bookId, [FromBody] Book inputBook)
+        {
+            var bookFromDb = await _repository.Book.GetBookByIdAsync(bookId, trackChanges: false);
+            if (inputBook == null)
+            {
+                return BadRequest("Input book is null");
+            }
+            _repository.Book.DeleteBook(bookFromDb);
+            _repository.Book.CreateBook(inputBook);
+            await _repository.SaveAsync();
+            return Ok(inputBook);
         }
     }
 }
