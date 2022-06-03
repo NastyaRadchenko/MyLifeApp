@@ -1,14 +1,11 @@
 ﻿@model IEnumerable<MyLifeClient.Models.State>
 
-@*<p>
-        <a asp-action="Create">Create New</a>
+<p>
+        <a asp-action="CreateState" class="text-info">Добавить</a>
     </p>
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Date)
                 </th>
@@ -18,9 +15,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Mood)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserId)
-                </th>
                 <th></th>
             </tr>
         </thead>
@@ -29,10 +23,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
+                        @item.Date.Day.@item.Date.Month.@item.Date.Year
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Weigth)
@@ -41,14 +32,18 @@
                         @Html.DisplayFor(modelItem => item.Mood)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.UserId)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                        @using (Html.BeginForm("UpdateState", "Home", FormMethod.Get))
+                        {
+                            <input type="hidden" name="inputId" value="@item.Id" />
+                            <input class="btn btn-link link" type="submit" value="Изменить">
+                        }
+                        @using (Html.BeginForm("DeleteState", "Home", FormMethod.Post))
+                        {
+                            <input type="hidden" name="inputId" value="@item.Id" />
+                            <input class="btn btn-link link" type="submit" value="Удалить">
+                        }
                     </td>
                 </tr>
             }
         </tbody>
-    </table>*@
+    </table>

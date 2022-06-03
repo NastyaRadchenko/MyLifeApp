@@ -19,6 +19,8 @@ namespace Entities
         public DbSet<Role> Roles { get; set; }
         public DbSet<DiaryEntry> DiaryEntries { get; set; }
         public DbSet<State> States { get; set; }
+        public DbSet<BookCategory> BookCategories { get; set; }
+        public DbSet<Book> Books { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

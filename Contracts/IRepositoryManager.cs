@@ -12,6 +12,8 @@ namespace Contracts
         IRoleRepository Role { get; }
         IDiaryRepository Diary { get; }
         IStateRepository State { get; }
+        IBookCategoryRepository BookCategory { get; }
+        IBookRepository Book { get; }
         Task SaveAsync();
     }
 }

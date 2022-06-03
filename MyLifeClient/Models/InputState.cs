@@ -8,6 +8,7 @@ namespace MyLifeClient.Models
 {
     public class InputState
     {
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "Введите дату")]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
@@ -21,8 +22,9 @@ namespace MyLifeClient.Models
         public int Mood { get; set; }
 
         public InputState() { }
-        public InputState(DateTime date, int mainWeigth, int partialWeight, int mood)
+        public InputState(Guid id,DateTime date, int mainWeigth, int partialWeight, int mood)
         {
+            Id = id;
             Date = date;
             MainWeigth = mainWeigth;
             PartialWeight = partialWeight;
