@@ -18,6 +18,7 @@ namespace Repository
 
         public async Task<IEnumerable<State>> GetStatesByUserIdAsync(Guid userId, bool trackChanges) =>
             await FindByCondition(e => e.UserId.Equals(userId), trackChanges)
+            .OrderBy(e => e.Date)
             .ToListAsync();
 
         public async Task<State> GetStateByIdAsync(Guid stateId, bool trackChanges) =>

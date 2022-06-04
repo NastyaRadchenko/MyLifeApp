@@ -20,7 +20,7 @@ namespace Repository
             await FindByCondition(e => e.Id.Equals(bookId), trackChanges)
             .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Book>> GetBookByCategoryAsync(Guid userId, Guid categoryId, bool trackChanges) =>
+        public async Task<IEnumerable<Book>> GetBooksByCategoryAsync(Guid userId, Guid categoryId, bool trackChanges) =>
             await FindByCondition(e => e.UserId.Equals(userId) && e.CategoryId.Equals(categoryId), trackChanges)
             .ToListAsync();
 

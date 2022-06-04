@@ -169,10 +169,17 @@ namespace MyLifeServer.Controllers
         }
 
         [HttpGet("{userId}/library/categories")]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> GetBookCategories()
         {
             var categories = await _repository.BookCategory.GetAllCategoriesAsync(trackChanges: false);
             return Ok(categories);
+        }
+
+        [HttpGet("{userId}/library/categories/{categoryId}")]
+        public async Task<IActionResult> GetBooksByCategory(Guid userId, Guid categoryId)
+        {
+            var books = await _repository.Book.GetBooksByCategoryAsync(userId, categoryId, trackChanges: false);
+            return Ok(books);
         }
 
 
@@ -212,6 +219,197 @@ namespace MyLifeServer.Controllers
             _repository.Book.CreateBook(inputBook);
             await _repository.SaveAsync();
             return Ok(inputBook);
+        }
+
+        //Purchases
+
+        [HttpGet("{userId}/expenses")]
+        public async Task<IActionResult> GetPurchases(Guid userId)
+        {
+            var purchase = await _repository.Purchase.GetPurchasesByUserIdAsync(userId, trackChanges: false);
+            return Ok(purchase);
+        }
+
+        [HttpGet("{userId}/expenses/categories")]
+        public async Task<IActionResult> GetPurchaseCategories(Guid userId)
+        {
+            var categories = await _repository.PurchaseCategory.GetPurchaseCategoriesByUserIdAsync(userId, trackChanges: false);
+            return Ok(categories);
+        }
+
+        [HttpGet("{userId}/expenses/categories/{categoryId}/purchases")]
+        public async Task<IActionResult> GetPurchasesByCategory(Guid userId, Guid categoryId)
+        {
+            var purchases = await _repository.Purchase.GetPurchasesByCategoryAsync(userId, categoryId, trackChanges: false);
+            return Ok(purchases);
+        }
+
+        [HttpGet("{userId}/expenses/categories/{categoryId}")]
+        public async Task<IActionResult> GetCategory(Guid categoryId)
+        {
+            var category = await _repository.PurchaseCategory.GetPurchaseCategoryByIdAsync(categoryId, trackChanges: false);
+            return Ok(category);
+        }
+
+        [HttpGet("{userId}/expenses/{purchesId}")]
+        public async Task<IActionResult> GetPurchase(Guid purchaseId)
+        {
+            var purchase = await _repository.Purchase.GetPurchaseByIdAsync(purchaseId, trackChanges: false);
+            return Ok(purchase);
+        }
+
+        [HttpPost("{userId}/expenses")]
+        public async Task<IActionResult> CreatePurchase([FromBody] Purchase purchase)
+        {
+            _repository.Purchase.CreatePurchase(purchase);
+            await _repository.SaveAsync();
+            return Ok(purchase);
+        }
+
+        [HttpPost("{userId}/expenses/categories")]
+        public async Task<IActionResult> CreateCategory([FromBody] PurchaseCategory purchaseCategory)
+        {
+            _repository.PurchaseCategory.CreatePurchaseCategory(purchaseCategory);
+            await _repository.SaveAsync();
+            return Ok(purchaseCategory);
+        }
+
+        [HttpDelete("{userId}/expenses/{purchesId}")]
+        public async Task<IActionResult> DeletePurchase(Guid purchaseId)
+        {
+            var purchase = await _repository.Purchase.GetPurchaseByIdAsync(purchaseId, trackChanges: false);
+            _repository.Purchase.DeletePurchase(purchase);
+            await _repository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{userId}/expenses/categories/{categoryId}")]
+        public async Task<IActionResult> DeleteCategory(Guid categoryId)
+        {
+            var category = await _repository.PurchaseCategory.GetPurchaseCategoryByIdAsync(categoryId, trackChanges: false);
+            _repository.PurchaseCategory.DeletePurchaseCategory(category);
+            await _repository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpPut("{userId}/expenses/{purchesId}")]
+        public async Task<IActionResult> UpdatePurchaseById(Guid purchaseId, [FromBody] Purchase inputPurchase)
+        {
+            var purchaseFromDb = await _repository.Purchase.GetPurchaseByIdAsync(purchaseId, trackChanges: false);
+            if (inputPurchase == null)
+            {
+                return BadRequest("Input purchase is null");
+            }
+            _repository.Purchase.DeletePurchase(purchaseFromDb);
+            _repository.Purchase.CreatePurchase(inputPurchase);
+            await _repository.SaveAsync();
+            return Ok(inputPurchase);
+        }
+
+        [HttpPut("{userId}/expenses/categories/{categoryId}")]
+        public async Task<IActionResult> UpdateCategory(Guid categoryId, [FromBody] PurchaseCategory inputPurchaseCategory)
+        {
+            var purchaseCategoryFromDb = await _repository.PurchaseCategory.GetPurchaseCategoryByIdAsync(categoryId, trackChanges: false);
+            if (inputPurchaseCategory == null)
+            {
+                return BadRequest("Input purchase category is null");
+            }
+            _repository.PurchaseCategory.DeletePurchaseCategory(purchaseCategoryFromDb);
+            _repository.PurchaseCategory.CreatePurchaseCategory(inputPurchaseCategory);
+            await _repository.SaveAsync();
+            return Ok(inputPurchaseCategory);
+        }
+
+        //Recipes
+
+        [HttpGet("{userId}/recipes")]
+        public async Task<IActionResult> GetRecipes(Guid userId)
+        {
+            var recipes = await _repository.Recipe.GetRecpesByUserIdAsync(userId, trackChanges: false);
+            return Ok(recipes);
+        }
+
+        [HttpGet("{userId}/recipes/{recipeId}")]
+        public async Task<IActionResult> GetRecipe(Guid recipeId)
+        {
+            var recipe = await _repository.Recipe.GetRecipeByIdAsync(recipeId, trackChanges: false);
+            return Ok(recipe);
+        }
+
+        [HttpGet("{userId}/recipes/{recipeId}/stages")]
+        public async Task<IActionResult> GetRecipeStages(Guid recipeId)
+        {
+            var stages = await _repository.Stage.GetStagesByRecipeIdAsync(recipeId, trackChanges: false);
+            return Ok(stages);
+        }
+
+        [HttpGet("{userId}/recipes/{recipeId}/stages/{stageId}")]
+        public async Task<IActionResult> GetRecipeStage(Guid stageId)
+        {
+            var stage = await _repository.Stage.GetStageByIdAsync(stageId, trackChanges: false);
+            return Ok(stage);
+        }
+
+        [HttpPost("{userId}/recipes")]
+        public async Task<IActionResult> CreateRecipe([FromBody] Recipe recipe)
+        {
+            _repository.Recipe.CreateRecipe(recipe);
+            await _repository.SaveAsync();
+            return Ok(recipe);
+        }
+
+        [HttpPost("{userId}/recipes/{recipeId}/stages")]
+        public async Task<IActionResult> CreateRecipeStage([FromBody] Stage stage)
+        {
+            _repository.Stage.CreateStage(stage);
+            await _repository.SaveAsync();
+            return Ok(stage);
+        }
+
+        [HttpDelete("{userId}/recipes/{recipeId}")]
+        public async Task<IActionResult> DeleteRecipe(Guid recipeId)
+        {
+            var recipe = await _repository.Recipe.GetRecipeByIdAsync(recipeId, trackChanges: false);
+            _repository.Recipe.DeleteRecipe(recipe);
+            await _repository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{userId}/recipes/{recipeId}/stages/{stageId}")]
+        public async Task<IActionResult> DeleteStage(Guid stageId)
+        {
+            var stage = await _repository.Stage.GetStageByIdAsync(stageId, trackChanges: false);
+            _repository.Stage.DeleteStage(stage);
+            await _repository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpPut("{userId}/recipes/{recipeId}")]
+        public async Task<IActionResult> UpdateRecipeById(Guid recipeId, [FromBody] Recipe inputRecipe)
+        {
+            var recipeFromDb = await _repository.Recipe.GetRecipeByIdAsync(recipeId, trackChanges: false);
+            if (inputRecipe == null)
+            {
+                return BadRequest("Input recipe is null");
+            }
+            _repository.Recipe.DeleteRecipe(recipeFromDb);
+            _repository.Recipe.CreateRecipe(inputRecipe);
+            await _repository.SaveAsync();
+            return Ok(inputRecipe);
+        }
+
+        [HttpPut("{userId}/recipes/{recipeId}/stages/{stageId}")]
+        public async Task<IActionResult> UpdateStageById(Guid stageId, [FromBody] Stage inputStage)
+        {
+            var stageFromDb = await _repository.Stage.GetStageByIdAsync(stageId, trackChanges: false);
+            if (inputStage == null)
+            {
+                return BadRequest("Input stage is null");
+            }
+            _repository.Stage.DeleteStage(stageFromDb);
+            _repository.Stage.CreateStage(inputStage);
+            await _repository.SaveAsync();
+            return Ok(inputStage);
         }
     }
 }

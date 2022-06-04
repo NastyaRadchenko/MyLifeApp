@@ -14,6 +14,10 @@ namespace Contracts
         IStateRepository State { get; }
         IBookCategoryRepository BookCategory { get; }
         IBookRepository Book { get; }
+        IPurchaseCategoryRepository PurchaseCategory { get; }
+        IPurchaseRepository Purchase { get; }
+        IRecipeRepository Recipe { get; }
+        IStageRepository Stage { get; }
         Task SaveAsync();
     }
 }

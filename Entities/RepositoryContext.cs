@@ -21,7 +21,10 @@ namespace Entities
         public DbSet<State> States { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
         public DbSet<Book> Books { get; set; }
-
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<PurchaseCategory> PurchaseCategories { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Stage> Stages { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
