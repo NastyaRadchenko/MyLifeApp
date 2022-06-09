@@ -18,6 +18,10 @@ namespace Repository
         private IStateRepository _stateRepository;
         private IBookCategoryRepository _bookCategoryRepository;
         private IBookRepository _bookRepository;
+        private IPurchaseCategoryRepository _purchaseCategoryRepository;
+        private IPurchaseRepository _purchaseRepository;
+        private IRecipeRepository _recipeRepository;
+        private IStageRepository _stageRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext)
         {
@@ -80,6 +84,46 @@ namespace Repository
                 if (_bookCategoryRepository == null)
                     _bookCategoryRepository = new BookCategoryRepository(_repositoryContext);
                 return _bookCategoryRepository;
+            }
+        }
+
+        public IPurchaseCategoryRepository PurchaseCategory
+        {
+            get
+            {
+                if (_purchaseCategoryRepository == null)
+                    _purchaseCategoryRepository = new PurchaseCategoryRepository(_repositoryContext);
+                return _purchaseCategoryRepository;
+            }
+        }
+
+        public IPurchaseRepository Purchase
+        {
+            get
+            {
+                if (_purchaseRepository == null)
+                    _purchaseRepository = new PurchaseRepository(_repositoryContext);
+                return _purchaseRepository;
+            }
+        }
+
+        public IRecipeRepository Recipe
+        {
+            get
+            {
+                if (_recipeRepository == null)
+                    _recipeRepository = new RecipeRepository(_repositoryContext);
+                return _recipeRepository;
+            }
+        }
+
+        public IStageRepository Stage
+        {
+            get
+            {
+                if (_stageRepository == null)
+                    _stageRepository = new StageRepository(_repositoryContext);
+                return _stageRepository;
             }
         }
         public Task SaveAsync() => _repositoryContext.SaveChangesAsync();

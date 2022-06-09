@@ -1,0 +1,57 @@
+﻿@model MyLifeClient.Models.Stage
+
+<style>
+    .container {
+        width: 62%;
+    }
+
+    .list {
+        background-color: white;
+        min-height: 450px;
+    }
+</style>
+
+<div class="container">
+    <div class="p-3 list">
+        @using (Html.BeginForm("UpdateStage", "Recipes", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RecipeId" value="@ViewBag.RecipeId" />
+            <input type="hidden" asp-for="Picture" />
+
+            <a class="mr-4">Изменить изображение:</a>
+            <input id="shouldDelete" name="shouldDelete" type="checkbox" value="true">
+            <input name="shouldDelete" type="hidden" value="false">
+            <label>Удалить?</label>
+            <input name="imgFile" type="file" class="mt-0" />
+            <table class="mt-1">
+                <tr><td><span asp-validation-for="Text" class="text-danger"></span></td></tr>
+            </table>
+            <div class="form-group mt-1">
+                <label asp-for="Text" class="control-label">Описание процесса приготовления:</label>
+                <textarea asp-for="Text" class="form-control" rows="10"></textarea>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <input type="submit" value="Сохранить" class="btn btn-info" />
+                    </td>
+
+                </tr>
+            </table>
+        }
+    </div>
+    <div>
+        @using (Html.BeginForm("RecipeStages", "Recipes", FormMethod.Get))
+        {
+            <input type="hidden" name="recipeId" value="@ViewBag.RecipeId" />
+            <input class="mt-2 text-info btn btn-link" type="submit" value="⇦ Назад">
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

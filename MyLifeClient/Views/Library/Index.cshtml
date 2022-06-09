@@ -47,12 +47,12 @@
                 else @item.About
             </td>
             <td>
-                @using (Html.BeginForm("Book", "Home", FormMethod.Get))
+                @using (Html.BeginForm("Book", "Library", FormMethod.Get))
                 {
                     <input type="hidden" name="inputId" value="@item.Id" />
                     <input class="btn btn-link link" type="submit" value="Подробнее">
                 }
-                @using (Html.BeginForm("DeleteBook", "Home", FormMethod.Post))
+                @using (Html.BeginForm("DeleteBook", "Library", FormMethod.Post))
                 {
                     <input type="hidden" name="inputId" value="@item.Id" />
                     <input class="btn btn-link link" type="submit" value="Удалить">

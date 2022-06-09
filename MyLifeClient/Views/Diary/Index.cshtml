@@ -41,12 +41,12 @@
                         }
                     </td>
                     <td>
-                        @using (Html.BeginForm("DiaryEntry", "Home", FormMethod.Get))
+                        @using (Html.BeginForm("DiaryEntry", "Diary", FormMethod.Get))
                         {
                             <input type="hidden" name="inputId" value="@item.Id" />
                             <input class="btn btn-link link" type="submit" value="Подробнее">
                         }
-                        @using (Html.BeginForm("DeleteDiaryEntry", "Home", FormMethod.Post))
+                        @using (Html.BeginForm("DeleteDiaryEntry", "Diary", FormMethod.Post))
                         {
                             <input type="hidden" name="inputId" value="@item.Id" />
                             <input class="btn btn-link link" type="submit" value="Удалить">

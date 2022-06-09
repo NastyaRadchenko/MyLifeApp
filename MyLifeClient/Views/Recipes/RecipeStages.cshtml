@@ -1,0 +1,58 @@
+﻿@model IEnumerable<MyLifeClient.Models.Stage>
+
+<p>
+    @using (Html.BeginForm("CreateStage", "Recipes", FormMethod.Get))
+    {
+        <input type="hidden" name="recipeId" value="@ViewBag.RecipeId" />
+        <input class="mt-2 text-info btn btn-link" type="submit" value="Добавить">
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Изображение
+            </th>
+            <th>
+                Текст
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@item.StageNumber</th>
+                <td style="text-align:center;">
+                    @if (item.Picture != null)
+                    {
+                        <img src="@ByteConvert.GetStringFromBytes(item.Picture)" width="50" />
+                    }
+                </td>
+                <td>
+                    @if (item.Text.Length > 180)
+                    {
+                        @item.Text.Substring(0, 180)
+                        <a>...</a>
+                    }
+                    else @item.Text
+                </td>
+                <td>
+                    @using (Html.BeginForm("Stage", "Recipes", FormMethod.Get))
+                    {
+                        <input type="hidden" name="inputId" value="@item.Id" />
+                        <input class="btn btn-link link" type="submit" value="Подробнее">
+                    }
+                    @using (Html.BeginForm("DeleteStage", "Recipes", FormMethod.Post))
+                    {
+                        <input type="hidden" name="inputRecipeId" value="@item.RecipeId" />
+                        <input type="hidden" name="inputId" value="@item.Id" />
+                        <input class="btn btn-link link" type="submit" value="Удалить">
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
