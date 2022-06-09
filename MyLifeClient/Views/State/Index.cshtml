@@ -32,12 +32,12 @@
                         @Html.DisplayFor(modelItem => item.Mood)
                     </td>
                     <td>
-                        @using (Html.BeginForm("UpdateState", "Home", FormMethod.Get))
+                        @using (Html.BeginForm("UpdateState", "State", FormMethod.Get))
                         {
                             <input type="hidden" name="inputId" value="@item.Id" />
                             <input class="btn btn-link link" type="submit" value="Изменить">
                         }
-                        @using (Html.BeginForm("DeleteState", "Home", FormMethod.Post))
+                        @using (Html.BeginForm("DeleteState", "State", FormMethod.Post))
                         {
                             <input type="hidden" name="inputId" value="@item.Id" />
                             <input class="btn btn-link link" type="submit" value="Удалить">

@@ -2,9 +2,8 @@
 
 <style>
     .container {
-        width: 70%;
+       width: 70%;
     }
-
     .list {
         background-color: white;
         min-height: 560px;
@@ -14,28 +13,20 @@
 
 <div class="container">
     <div class="pl-3 pr-3 list">
-        @using (Html.BeginForm("UpdateDiaryEntry", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("CreateDiaryEntry", "Diary", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="UserId" />
-                <input type="hidden" asp-for="Picture" />
-            </div>
+            <input type="hidden" asp-for="Id" value="@Guid.NewGuid()" />
+            <input type="hidden" asp-for="UserId" value="@MainUser.GetId()" />
             <div class="form-group">
                 <table>
                     <tr>
                         <td>
-                            <input asp-for="Date" class="form-control"/>
+                            <input asp-for="Date" class="form-control" />
                         </td>
                         <td class="pl-3">
-                            <p class="mb-1 mt-2">Изменить изображение:</p>
+                            <p class="mb-1 mt-2">Добавить изображение:</p>
                             <input name="imgFile" type="file" class="mt-0" />
-                        </td>
-                        <td>
-                            <input id="shouldDelete" name="shouldDelete" type="checkbox" value="true">
-                            <input name="shouldDelete" type="hidden" value="false">
-                            <label>Удалить фото</label>
                         </td>
                     </tr>
                 </table>
@@ -59,8 +50,8 @@
         }
     </div>
     <div class="mt-3">
-        <a asp-action="Diary" class="mt-2 text-info">⇦ Назад</a>
-    </div>
+        <a asp-action="Index" class="mt-2 text-info">⇦ Назад</a>
+    </div>    
 </div>
 
 

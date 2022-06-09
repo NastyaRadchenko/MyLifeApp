@@ -1,0 +1,80 @@
+﻿@model MyLifeClient.Models.Recipe
+
+<style>
+    .container {
+       width: 62%;
+    }
+    .list {
+        background-color: white;
+        min-height: 450px;
+    }
+</style>
+
+<div class="container">
+    <div class="p-3 list">
+        @using (Html.BeginForm("CreateRecipe", "Recipes", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" value="@Guid.NewGuid()" />
+            <input type="hidden" asp-for="UserId" value="@MainUser.GetId()" />
+            <table style="width: 100%;">
+                <tr>
+                    <td>Название блюда:</td>
+                    <td  class="pl-4">Время (минут):</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input asp-for="Name" class="form-control" />
+                    </td>
+                    <td class="pl-4">
+                        <input asp-for="TimeInMinutes" class="form-control"/>
+                    </td>
+                    <td class="pl-4">
+                        <input type="submit" value="Этапы" class="btn btn-info" />
+                    </td>
+                </tr>
+            </table>
+            <table class="mt-1">
+                <tr><td><span asp-validation-for="Name" class="text-danger"></span></td></tr>
+                <tr><td><span asp-validation-for="TimeInMinutes" class="text-danger"></span></td></tr>
+                <tr><td><span asp-validation-for="Ingredients" class="text-danger"></span></td></tr>
+            </table>       
+            <div class="form-group mt-1">
+                <label asp-for="Ingredients" class="control-label">Ингридиенты и их количество:</label>
+                <textarea asp-for="Ingredients" class="form-control" rows="10"></textarea>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        Сложность:
+                    </td>
+                    <td class="pl-3">
+                        Добавить изображение:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <select class="custom-select" asp-for="Complexity">
+                            <option value="1">Элементарно</option>
+                            <option value="2">Просто</option>
+                            <option value="3">Нормально</option>
+                            <option value="4">Сложно</option>
+                            <option value="5">Очень сложно</option>
+                        </select>
+                    </td>
+                    <td class="pl-3">
+                        <input name="imgFile" type="file" class="mt-0" />
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+    <div>
+        <a asp-action="Recipes" class="mt-2 text-info">⇦ Назад</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

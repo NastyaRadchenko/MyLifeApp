@@ -1,0 +1,59 @@
+﻿@model IEnumerable<MyLifeClient.Models.Stage>
+
+<style>
+    .container {
+       width: 70%;
+    }
+    .list {
+        background-color: white;
+        min-height: 500px;
+    }
+</style>
+
+<div class="container">
+    <div class="p-3 mb-2 list">
+        <div class="text-left">
+            <table width="100%">
+                <tr>
+                    <td><h5>@ViewBag.Recipe.Name, @ViewBag.Recipe.TimeInMinutes мин.</h5></td>
+                    <td align="right">
+                        @for (int i = 0; i < ViewBag.Recipe.Complexity; i++)
+                        {
+                            <img src="~/img/star.png" width="19" />
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table style="width: 100%;">
+            <tr>
+                <td style="vertical-align: text-top;">
+                    <a class="font-italic">@ViewBag.Recipe.Ingredients</a>
+                </td>
+                <td>
+                    @if (ViewBag.Recipe.Picture != null)
+                    {
+                        <a><img src="@ByteConvert.GetStringFromBytes(ViewBag.Recipe.Picture)" width="200" class="float-left mr-3" /></a>
+                    }
+                </td>
+            </tr>
+        </table>
+        <div class="container pre-scrollable scroll-block mb-2" style="width: 100%; min-height: 250px;">
+            @foreach (var stage in Model)
+            {
+                <hr />
+                @if (stage.Picture != null)
+                {
+                    <a><img src="@ByteConvert.GetStringFromBytes(stage.Picture)" width="200" class="float-left mr-3" /></a>
+                }
+                <a>@stage.Text</a>
+            }
+        </div>
+        @using (Html.BeginForm("UpdateRecipe", "Recipes", FormMethod.Get))
+        {
+            <input type="hidden" name="inputId" value="@ViewBag.Recipe.Id" />
+            <input class="btn btn-outline-info" type="submit" value="Изменить">
+        }
+    </div>
+    <a asp-action="Recipes" class="text-info">⇦ Назад</a>
+</div>

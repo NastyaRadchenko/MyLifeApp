@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td style="vertical-align: bottom;" class="pb-3">
-                        @using (Html.BeginForm("UpdateBook", "Home", FormMethod.Get))
+                        @using (Html.BeginForm("UpdateBook", "Library", FormMethod.Get))
                         {
                             <input type="hidden" name="inputId" value="@Model.Id" />
                             <input class="btn btn-outline-info" type="submit" value="Изменить">
@@ -53,7 +53,7 @@
             </table>
     </div>
     <div class="mt-3">
-        <a asp-action="Library" class="mt-2 text-info">⇦ Назад</a>
+        <a asp-action="Index" class="mt-2 text-info">⇦ Назад</a>
     </div>
 </div>
 

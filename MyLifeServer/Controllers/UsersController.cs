@@ -385,7 +385,7 @@ namespace MyLifeServer.Controllers
         }
 
         [HttpPut("{userId}/recipes/{recipeId}")]
-        public async Task<IActionResult> UpdateRecipeById(Guid recipeId, [FromBody] Recipe inputRecipe)
+        public async Task<IActionResult> UpdateRecipe(Guid recipeId, [FromBody] Recipe inputRecipe)
         {
             var recipeFromDb = await _repository.Recipe.GetRecipeByIdAsync(recipeId, trackChanges: false);
             if (inputRecipe == null)
@@ -399,7 +399,7 @@ namespace MyLifeServer.Controllers
         }
 
         [HttpPut("{userId}/recipes/{recipeId}/stages/{stageId}")]
-        public async Task<IActionResult> UpdateStageById(Guid stageId, [FromBody] Stage inputStage)
+        public async Task<IActionResult> UpdateStage(Guid stageId, [FromBody] Stage inputStage)
         {
             var stageFromDb = await _repository.Stage.GetStageByIdAsync(stageId, trackChanges: false);
             if (inputStage == null)
